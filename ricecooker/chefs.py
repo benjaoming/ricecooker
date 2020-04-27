@@ -138,7 +138,7 @@ class BaseChef(object):
                 "(Deprecated.) Stage updated content for review. This  flag is "
                 "now the default and has been kept solely to  maintain "
                 "compatibility. Use --deploy to immediately push changes.",
-            )
+            ),
         )
         parser.add_argument(
             "--deploy",
@@ -264,22 +264,19 @@ class BaseChef(object):
         elif args["quiet"]:
             level = logging.ERROR
 
-        config.setup_logging(level=level)
-
         # 2. File handler (logs/yyyy-mm-dd__HHMM.log)
         try:
             # FIXME: This code assumes we run chefs from the chef's root directory.
             # We probably want to have chefs set a root directory for files like this.
             if not os.path.exists("logs"):
                 os.makedirs("logs")
-            logfile_name = datetime.now().strftime("%Y-%m-%d__%H%M") + ".log"
-            logfile_path = os.path.join("logs", logfile_name)
-            file_handler = logging.FileHandler(logfile_path)
-            logfile_formatter = logging.Formatter(
-                "%(asctime)s - %(message)s", "%Y-%m-%d %H:%M:%S"
-            )
-            file_handler.setFormatter(logfile_formatter)
-            config.LOGGER.addHandler(file_handler)
+            logfile_main = datetime.now().strftime("%Y-%m-%d__%H%M") + ".log"
+            logfile_error = datetime.now().strftime("%Y-%m-%d__%H%M") + ".err.log"
+            main_log = os.path.join("logs", logfile_main)
+            error_log = os.path.join("logs", logfile_error)
+
+            config.setup_logging(level=level, main_log=main_log, error_log=error_log)
+
         except Exception as e:
             config.LOGGER.warning("Unable to setup file logging due to %s" % e)
 
@@ -461,7 +458,9 @@ class SushiChef(BaseChef):
         args_copy = args.copy()
         args_copy["token"] = args_copy["token"][0:6] + "..."
         config.LOGGER.info(
-            "In SushiChef.run method. args={} options={}".format(str(args_copy), str(options))
+            "In SushiChef.run method. args={} options={}".format(
+                str(args_copy), str(options)
+            )
         )
         self.pre_run(args, options)
         uploadchannel_wrapper(self, args, options)
