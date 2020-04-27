@@ -51,16 +51,14 @@ def setup_logging(level=logging.INFO, error_log=None, add_loggers=None):
     }
 
     config = {
-        'version': 1,
-        'disable_existing_loggers': False,
-        'formatters': {
-            'colored': {
-                '()': 'colorlog.ColoredFormatter',
-                'format': "%(log_color)s%(levelname)-8s%(reset)s %(blue)s%(message)s"
+        "version": 1,
+        "disable_existing_loggers": False,
+        "formatters": {
+            "colored": {
+                "()": "colorlog.ColoredFormatter",
+                "format": "%(log_color)s%(levelname)-8s%(reset)s %(blue)s%(message)s",
             },
-            "simple_date": {
-                "format": "%(levelname)s %(asctime)s %(name)s %(message)s"
-            },
+            "simple_date": {"format": "%(levelname)s %(asctime)s %(name)s %(message)s"},
         },
         "handlers": {
             "console": {
@@ -75,12 +73,9 @@ def setup_logging(level=logging.INFO, error_log=None, add_loggers=None):
                 "formatter": "simple_date",
             },
         },
-        'loggers': {
-            '': {
-                "handlers": handlers,
-                "level": level,
-            },
-            'ricecooker': default_logger_config,
+        "loggers": {
+            "": {"handlers": handlers, "level": level},
+            "ricecooker": default_logger_config,
         },
     }
 
@@ -104,16 +99,16 @@ setup_logging()
 
 
 # Domain and file store location for uploading to production Studio server
-DOMAIN_ENV = os.getenv('STUDIO_URL', None)
+DOMAIN_ENV = os.getenv("STUDIO_URL", None)
 if DOMAIN_ENV is None:  # check old ENV varable for backward compatibility
-    DOMAIN_ENV = os.getenv('CONTENTWORKSHOP_URL', None)
+    DOMAIN_ENV = os.getenv("CONTENTWORKSHOP_URL", None)
 DOMAIN = DOMAIN_ENV if DOMAIN_ENV else "https://api.studio.learningequality.org"
-if DOMAIN.endswith('/'):
-    DOMAIN = DOMAIN.rstrip('/')
-FILE_STORE_LOCATION = hashlib.md5(DOMAIN.encode('utf-8')).hexdigest()
+if DOMAIN.endswith("/"):
+    DOMAIN = DOMAIN.rstrip("/")
+FILE_STORE_LOCATION = hashlib.md5(DOMAIN.encode("utf-8")).hexdigest()
 
 # Allow users to choose which phantomjs they use
-PHANTOMJS_PATH = os.getenv('PHANTOMJS_PATH', None)
+PHANTOMJS_PATH = os.getenv("PHANTOMJS_PATH", None)
 
 # URL for authenticating user on Kolibri Studio
 AUTHENTICATION_URL = "{domain}/api/internal/authenticate_user_internal"
@@ -161,20 +156,24 @@ FAILED_FILES = []
 
 # Session for downloading files
 DOWNLOAD_SESSION = requests.Session()
-DOWNLOAD_SESSION.mount('file://', FileAdapter())
+DOWNLOAD_SESSION.mount("file://", FileAdapter())
 
 # Environment variable indicating we should use a proxy for youtube_dl downloads
 USEPROXY = False
-USEPROXY = True if os.getenv('USEPROXY') is not None or os.getenv('PROXY_LIST') is not None else False
+USEPROXY = (
+    True
+    if os.getenv("USEPROXY") is not None or os.getenv("PROXY_LIST") is not None
+    else False
+)
 
 # Sushibar server
-SUSHIBAR_URL = os.getenv('SUSHIBAR_URL', "https://sushibar.learningequality.org")
-if SUSHIBAR_URL.endswith('/'):
-    SUSHIBAR_URL = SUSHIBAR_URL.rstrip('/')
-if not SUSHIBAR_URL.startswith('http'):
-    SUSHIBAR_URL = 'https://' + SUSHIBAR_URL        # in case only hostname given
+SUSHIBAR_URL = os.getenv("SUSHIBAR_URL", "https://sushibar.learningequality.org")
+if SUSHIBAR_URL.endswith("/"):
+    SUSHIBAR_URL = SUSHIBAR_URL.rstrip("/")
+if not SUSHIBAR_URL.startswith("http"):
+    SUSHIBAR_URL = "https://" + SUSHIBAR_URL  # in case only hostname given
 SUSHI_BAR_HTTP = SUSHIBAR_URL
-SUSHI_BAR_WEBSOCKET = SUSHIBAR_URL.replace('http', 'ws', 1)
+SUSHI_BAR_WEBSOCKET = SUSHIBAR_URL.replace("http", "ws", 1)
 SUSHI_BAR_CHANNEL_URL = "{domain}/api/channels/"
 SUSHI_BAR_CHANNEL_RUNS_URL = "{domain}/api/channelruns/"
 SUSHI_BAR_CHANNEL_RUNS_DETAIL_URL = "{domain}/api/channelruns/{run_id}/"
@@ -185,7 +184,9 @@ SUSHI_BAR_CONTROL_URL = "{domain}/control/{channel_id}/"
 
 
 # Character limits based on Kolibri models
-TRUNCATE_MSG = "\t\t{kind} {id}: {field} {value} is too long - max {max} characters (truncating)"
+TRUNCATE_MSG = (
+    "\t\t{kind} {id}: {field} {value} is too long - max {max} characters (truncating)"
+)
 
 MAX_TITLE_LENGTH = 200
 MAX_SOURCE_ID_LENGTH = 200
@@ -199,67 +200,60 @@ MAX_LICENSE_DESCRIPTION_LENGTH = 400
 MAX_COPYRIGHT_HOLDER_LENGTH = 200
 
 MAX_CHAR_LIMITS = {
-    "title": {
-        "kind": "Node",
-        "field": "title",
-        "max": MAX_TITLE_LENGTH
-    },
-    "source_id": {
-        "kind": "Node",
-        "field": "source_id",
-        "max": MAX_SOURCE_ID_LENGTH
-    },
+    "title": {"kind": "Node", "field": "title", "max": MAX_TITLE_LENGTH},
+    "source_id": {"kind": "Node", "field": "source_id", "max": MAX_SOURCE_ID_LENGTH},
     "description": {
         "kind": "Node",
         "field": "description",
-        "max": MAX_DESCRIPTION_LENGTH
+        "max": MAX_DESCRIPTION_LENGTH,
     },
-    "author": {
-        "kind": "Node",
-        "field": "author",
-        "max": MAX_AUTHOR_LENGTH
-    },
+    "author": {"kind": "Node", "field": "author", "max": MAX_AUTHOR_LENGTH},
     "question_source_url": {
         "kind": "Question",
         "field": "source url",
-        "max": MAX_SOURCE_URL_LENGTH
+        "max": MAX_SOURCE_URL_LENGTH,
     },
     "original_filename": {
         "kind": "File",
         "field": "original filename",
-        "max": MAX_ORIGINAL_FILENAME_LENGTH
+        "max": MAX_ORIGINAL_FILENAME_LENGTH,
     },
     "file_source_url": {
         "kind": "File",
         "field": "source url",
-        "max": MAX_SOURCE_URL_LENGTH
+        "max": MAX_SOURCE_URL_LENGTH,
     },
     "license_description": {
         "kind": "License",
         "field": "license description",
-        "max": MAX_LICENSE_DESCRIPTION_LENGTH
+        "max": MAX_LICENSE_DESCRIPTION_LENGTH,
     },
     "copyright_holder": {
         "kind": "License",
         "field": "copyright holder",
-        "max": MAX_COPYRIGHT_HOLDER_LENGTH
+        "max": MAX_COPYRIGHT_HOLDER_LENGTH,
     },
-    "provider": {
-        "kind": "Provider",
-        "field": "provider",
-        "max": MAX_PROVIDER_LENGTH
-    },
+    "provider": {"kind": "Provider", "field": "provider", "max": MAX_PROVIDER_LENGTH},
     "aggregator": {
         "kind": "Aggregator",
         "field": "aggregator",
-        "max": MAX_AGGREGATOR_LENGTH
+        "max": MAX_AGGREGATOR_LENGTH,
     },
 }
 
 
 def print_truncate(field, id, value, kind=None):
     limit = MAX_CHAR_LIMITS.get(field)
-    LOGGER.warning(TRUNCATE_MSG.format(kind=kind or limit["kind"], id=id, field=limit["field"], value=value, max=limit["max"]))
+    LOGGER.warning(
+        TRUNCATE_MSG.format(
+            kind=kind or limit["kind"],
+            id=id,
+            field=limit["field"],
+            value=value,
+            max=limit["max"],
+        )
+    )
+
 
 def get_storage_path(filename):
     """ get_storage_path: returns path to storage directory for downloading content
@@ -272,12 +266,14 @@ def get_storage_path(filename):
         os.makedirs(directory)
     return os.path.join(directory, filename)
 
+
 def authentication_url():
     """ authentication_url: returns url to login to Kolibri Studio
         Args: None
         Returns: string url to authenticate_user_internal endpoint
     """
     return AUTHENTICATION_URL.format(domain=DOMAIN)
+
 
 def init_file_mapping_store():
     """ init_file_mapping_store: creates log to keep track of downloaded files
@@ -289,6 +285,7 @@ def init_file_mapping_store():
     if not os.path.exists(path):
         os.makedirs(path)
 
+
 def get_restore_path(filename):
     """ get_restore_path: returns path to directory for restoration points
         Args:
@@ -298,7 +295,7 @@ def get_restore_path(filename):
     path = os.path.join(RESTORE_DIRECTORY, FILE_STORE_LOCATION)
     if not os.path.exists(path):
         os.makedirs(path)
-    return os.path.join(path, filename + '.pickle')
+    return os.path.join(path, filename + ".pickle")
 
 
 def check_version_url():
@@ -316,12 +313,14 @@ def file_diff_url():
     """
     return FILE_DIFF_URL.format(domain=DOMAIN)
 
+
 def file_upload_url():
     """ file_upload_url: returns url to upload files
         Args: None
         Returns: string url to file_upload endpoint
     """
     return FILE_UPLOAD_URL.format(domain=DOMAIN)
+
 
 def create_channel_url():
     """ create_channel_url: returns url to create channel
@@ -330,12 +329,14 @@ def create_channel_url():
     """
     return CREATE_CHANNEL_URL.format(domain=DOMAIN)
 
+
 def add_nodes_url():
     """ add_nodes_url: returns url to add nodes to channel
         Args: None
         Returns: string url to add_nodes endpoint
     """
     return ADD_NODES_URL.format(domain=DOMAIN)
+
 
 def add_nodes_from_file_url():
     """ add_nodes_from_file_url: returns url to add nodes to channel using json file
@@ -344,6 +345,7 @@ def add_nodes_from_file_url():
     """
     return ADD_NODES_FROM_FILE_URL.format(domain=DOMAIN)
 
+
 def finish_channel_url():
     """ finish_channel_url: returns url to finish uploading a channel
         Args: None
@@ -351,13 +353,19 @@ def finish_channel_url():
     """
     return FINISH_CHANNEL_URL.format(domain=DOMAIN)
 
+
 def open_channel_url(channel, staging=False):
     """ open_channel_url: returns url to uploaded channel
         Args:
             channel (str): channel id of uploaded channel
         Returns: string url to open channel
     """
-    return OPEN_CHANNEL_URL.format(domain=DOMAIN, channel_id=channel, access='staging' if staging or STAGE else 'edit')
+    return OPEN_CHANNEL_URL.format(
+        domain=DOMAIN,
+        channel_id=channel,
+        access="staging" if staging or STAGE else "edit",
+    )
+
 
 def publish_channel_url():
     """ open_channel_url: returns url to publish channel
@@ -366,11 +374,13 @@ def publish_channel_url():
     """
     return PUBLISH_CHANNEL_URL.format(domain=DOMAIN)
 
+
 def sushi_bar_channels_url():
     """
     Returns the url to report the progress of a sushi chef
     """
     return SUSHI_BAR_CHANNEL_URL.format(domain=SUSHI_BAR_HTTP)
+
 
 def sushi_bar_channel_runs_url():
     """
@@ -378,12 +388,15 @@ def sushi_bar_channel_runs_url():
     """
     return SUSHI_BAR_CHANNEL_RUNS_URL.format(domain=SUSHI_BAR_HTTP)
 
+
 def sushi_bar_channel_runs_detail_url(run_id):
     """
     Returns the url to patch a channel run.
     """
-    return SUSHI_BAR_CHANNEL_RUNS_DETAIL_URL.format(domain=SUSHI_BAR_HTTP,
-                                                    run_id=run_id)
+    return SUSHI_BAR_CHANNEL_RUNS_DETAIL_URL.format(
+        domain=SUSHI_BAR_HTTP, run_id=run_id
+    )
+
 
 def sushi_bar_stages_url(run_id):
     """
@@ -391,11 +404,13 @@ def sushi_bar_stages_url(run_id):
     """
     return SUSHI_BAR_STAGES_URL.format(domain=SUSHI_BAR_HTTP, run_id=run_id)
 
+
 def sushi_bar_progress_url(run_id):
     """
     Returns the url to report the progress of a sushi chef
     """
     return SUSHI_BAR_PROGRESS_URL.format(domain=SUSHI_BAR_HTTP, run_id=run_id)
+
 
 def sushi_bar_logs_url(run_id):
     """
@@ -403,8 +418,11 @@ def sushi_bar_logs_url(run_id):
     """
     return SUSHI_BAR_LOGS_URL.format(domain=SUSHI_BAR_WEBSOCKET, run_id=run_id)
 
+
 def sushi_bar_control_url(channel_id):
     """
     Returns the url to report the progress of a sushi chef
     """
-    return SUSHI_BAR_CONTROL_URL.format(domain=SUSHI_BAR_WEBSOCKET, channel_id=channel_id)
+    return SUSHI_BAR_CONTROL_URL.format(
+        domain=SUSHI_BAR_WEBSOCKET, channel_id=channel_id
+    )
